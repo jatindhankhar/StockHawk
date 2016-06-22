@@ -6,8 +6,11 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
+import com.sam_chordas.android.stockhawk.data.QuoteDatabase;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.CursorRecyclerViewAdapter;
 import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
@@ -69,6 +73,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     // The intent service is for executing immediate pulls from the Yahoo API
     // GCMTaskService can only schedule tasks, they cannot execute immediately
     mServiceIntent = new Intent(this, StockIntentService.class);
+    networkSnackBar();
     if (savedInstanceState == null){
       // Run the initialize task service so that some stocks appear upon an empty database
       mServiceIntent.putExtra("tag", "init");
@@ -76,6 +81,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         startService(mServiceIntent);
       } else{
         networkToast();
+        handleEmptyState();
+
       }
     }
     RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -92,6 +99,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 c.moveToPosition(position);
                 String sym = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
                 Toast.makeText(MyStocksActivity.this, "Daymn Bro! " + sym, Toast.LENGTH_SHORT).show();
+
               }
             }));
     recyclerView.setAdapter(mCursorAdapter);
@@ -123,6 +131,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                     // Add the stock to DB
                     mServiceIntent.putExtra("tag", "add");
                     mServiceIntent.putExtra("symbol", input.toString());
+                    Log.d("Yolopad","Symbol is " +mServiceIntent.getStringExtra("symbol"));
                     startService(mServiceIntent);
                   }
                 }
@@ -130,6 +139,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
               .show();
         } else {
           networkToast();
+          networkSnackBar();
         }
 
       }
@@ -229,4 +239,21 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     mCursorAdapter.swapCursor(null);
   }
 
+  private void handleEmptyState()
+  {
+
+
+   // if(new QuoteCursorAdapter(this, null).getItemCount() == 0)
+      findViewById(R.id.empty_stock_view).setVisibility(View.VISIBLE);
+
+
+  }
+  private void networkSnackBar()
+  {
+    //Snackbar.make(findViewById(R.id.coo))
+    CoordinatorLayout cl = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
+//    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+    Snackbar.make(cl,"Connectivity issue",Snackbar.LENGTH_LONG).show();
+  }
 }
+
