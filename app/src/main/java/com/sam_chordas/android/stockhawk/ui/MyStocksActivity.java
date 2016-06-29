@@ -99,6 +99,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 c.moveToPosition(position);
                 String sym = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
                 Toast.makeText(MyStocksActivity.this, "Daymn Bro! " + sym, Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getBaseContext(),DetailActivity.class).putExtra("sym",sym));
 
               }
             }));
