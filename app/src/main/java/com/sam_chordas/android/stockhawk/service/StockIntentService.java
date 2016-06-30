@@ -3,7 +3,11 @@ package com.sam_chordas.android.stockhawk.service;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.google.android.gms.gcm.TaskParams;
 
 /**
@@ -19,7 +23,7 @@ public class StockIntentService extends IntentService {
     super(name);
   }
 
-  @Override protected void onHandleIntent(Intent intent) {
+  @Override protected void onHandleIntent(final Intent intent) {
     Log.d(StockIntentService.class.getSimpleName(), "Stock Intent Service");
     StockTaskService stockTaskService = new StockTaskService(this);
     Bundle args = new Bundle();
@@ -28,6 +32,21 @@ public class StockIntentService extends IntentService {
     }
     // We can call OnRunTask from the intent service to force it to run immediately instead of
     // scheduling a task.
-    stockTaskService.onRunTask(new TaskParams(intent.getStringExtra("tag"), args));
+    try {
+      stockTaskService.onRunTask(new TaskParams(intent.getStringExtra("tag"), args));
+    }
+    catch ( Exception e) {
+      //http://stackoverflow.com/a/28318124 with some modifications
+      Log.d("Yolopad","No stock for " + intent.getStringExtra("symbol"));
+      Handler handler=new Handler(Looper.getMainLooper());
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          Toast.makeText(getApplicationContext(), intent.getStringExtra("symbol") + " is not a valid stock", Toast.LENGTH_LONG).show();
+        }
+
+      });
+    }
+
   }
 }

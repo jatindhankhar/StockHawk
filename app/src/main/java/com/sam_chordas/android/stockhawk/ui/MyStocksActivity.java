@@ -97,9 +97,14 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 // do something on item click
                 Cursor c = mCursorAdapter.getCursor();
                 c.moveToPosition(position);
-                String sym = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
-                Toast.makeText(MyStocksActivity.this, "Daymn Bro! " + sym, Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getBaseContext(),DetailActivity.class).putExtra("sym",sym));
+                //String extraInfo = c.getString(c.getColumnIndex(QuoteColumns.EXTRAINFO));
+                Log.d("Yolopad","Symbol is" +c.getColumnIndex(QuoteColumns.SYMBOL));
+                Log.d("Yolopad","Extra Info is" +c.getColumnIndex(QuoteColumns.EXTRAINFO));
+                //Log.d("Yolopad","Extra info is" + c.getString(c.getColumnNames()));
+                for(String col : c.getColumnNames())
+                  Log.d("Yolopad","Column name is " +col);
+                //Toast.makeText(MyStocksActivity.this, "Daymn Bro! " + sym, Toast.LENGTH_SHORT).show();
+                //startActivity(new Intent(getBaseContext(),DetailActivity.class).putExtra("info",extraInfo));
 
               }
             }));

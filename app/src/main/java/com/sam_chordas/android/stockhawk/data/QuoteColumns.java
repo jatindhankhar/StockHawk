@@ -2,6 +2,7 @@ package com.sam_chordas.android.stockhawk.data;
 
 import net.simonvt.schematic.annotation.AutoIncrement;
 import net.simonvt.schematic.annotation.DataType;
+import net.simonvt.schematic.annotation.ExecOnCreate;
 import net.simonvt.schematic.annotation.NotNull;
 import net.simonvt.schematic.annotation.PrimaryKey;
 
@@ -25,4 +26,6 @@ public class QuoteColumns {
   public static final String ISUP = "is_up";
   @DataType(DataType.Type.INTEGER) @NotNull
   public static final String ISCURRENT = "is_current";
+  @DataType(DataType.Type.TEXT) @NotNull @ExecOnCreate
+  public static final String EXTRAINFO = "extrainfo";
 }
