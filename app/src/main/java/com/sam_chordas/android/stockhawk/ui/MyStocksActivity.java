@@ -97,14 +97,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 // do something on item click
                 Cursor c = mCursorAdapter.getCursor();
                 c.moveToPosition(position);
-                //String extraInfo = c.getString(c.getColumnIndex(QuoteColumns.EXTRAINFO));
-                Log.d("Yolopad","Symbol is" +c.getColumnIndex(QuoteColumns.SYMBOL));
-                Log.d("Yolopad","Extra Info is" +c.getColumnIndex(QuoteColumns.EXTRAINFO));
-                //Log.d("Yolopad","Extra info is" + c.getString(c.getColumnNames()));
-                for(String col : c.getColumnNames())
-                  Log.d("Yolopad","Column name is " +col);
+                String extraInfo = c.getString(c.getColumnIndex(QuoteColumns.EXTRAINFO));
+
                 //Toast.makeText(MyStocksActivity.this, "Daymn Bro! " + sym, Toast.LENGTH_SHORT).show();
-                //startActivity(new Intent(getBaseContext(),DetailActivity.class).putExtra("info",extraInfo));
+                startActivity(new Intent(getBaseContext(),DetailActivity.class).putExtra("info",extraInfo));
 
               }
             }));
@@ -226,9 +222,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   @Override
   public Loader<Cursor> onCreateLoader(int id, Bundle args){
     // This narrows the return to only the stocks that are most current.
+    //Thanks https://discussions.udacity.com/t/stockhawk-database-table-creation/175433/11?u=jatindhankhar
     return new CursorLoader(this, QuoteProvider.Quotes.CONTENT_URI,
         new String[]{ QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE,
-            QuoteColumns.PERCENT_CHANGE, QuoteColumns.CHANGE, QuoteColumns.ISUP},
+            QuoteColumns.PERCENT_CHANGE, QuoteColumns.CHANGE, QuoteColumns.ISUP,QuoteColumns.EXTRAINFO},
         QuoteColumns.ISCURRENT + " = ?",
         new String[]{"1"},
         null);
