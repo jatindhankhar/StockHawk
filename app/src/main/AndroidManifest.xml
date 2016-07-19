@@ -37,10 +37,15 @@
         </service>
         <service android:name=".service.StockIntentService" />
 
+        <!-- Laziest way to allow WidgetViewFactory query data (but not best practice)
+        Else widget will crash while querying data
+        Thanks to Log Cat :)
+        -->
         <provider
             android:name=".data.generated.QuoteProvider"
             android:authorities="com.sam_chordas.android.stockhawk.data.QuoteProvider"
-            android:exported="false" />
+            android:exported="true"
+            />
 
         <activity
             android:name=".ui.DetailActivity"
@@ -61,7 +66,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
-
+        <service android:name=".widget.WidgetRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            />
         <receiver android:name=".widget.StockWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
