@@ -30,8 +30,9 @@
 
 
         <ImageView
+            android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:src="@drawable/ic_trending_up"
             android:textSize="@dimen/md_title_textsize"
             android:layout_gravity="left|center_vertical" />
