@@ -23,6 +23,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.sam_chordas.android.stockhawk.R;
@@ -57,6 +59,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   private QuoteCursorAdapter mCursorAdapter;
   private Context mContext;
   private Cursor mCursor;
+  private View errorLayout;
   boolean isConnected;
 
   @Override
@@ -73,6 +76,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     // The intent service is for executing immediate pulls from the Yahoo API
     // GCMTaskService can only schedule tasks, they cannot execute immediately
     mServiceIntent = new Intent(this, StockIntentService.class);
+    errorLayout = findViewById(R.id.error_layout);
     if (savedInstanceState == null){
       // Run the initialize task service so that some stocks appear upon an empty database
       mServiceIntent.putExtra("tag", "init");
@@ -80,9 +84,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         startService(mServiceIntent);
       } else{
         networkToast();
-        networkSnackBar();
-        handleEmptyState();
-
+        networkSnackBar("Connectivity issue!");
       }
     }
     RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -104,13 +106,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
               }
             }));
-    mCursorAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-      @Override
-      public void onChanged() {
-        super.onChanged();
-        handleEmptyState();
-      }
-    });
     recyclerView.setAdapter(mCursorAdapter);
 
 
@@ -146,7 +141,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
               })
               .show();
         } else {
-          networkSnackBar();
+          networkSnackBar("Connectivity issue");
         }
 
       }
@@ -240,6 +235,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   public void onLoadFinished(Loader<Cursor> loader, Cursor data){
     mCursorAdapter.swapCursor(data);
     mCursor = data;
+    handleEmptyState();
   }
 
   @Override
@@ -255,35 +251,38 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
       if(isConnected)
       {
         //If device is connected, we have two situations
-        if(mCursorAdapter == null || mCursorAdapter.getItemCount() == 0 )
+        if(mCursor.getCount() == 0 )
         {
           //Prompt user to add a stock
-          Log.d("Yolopad","Gotta add stock");
+          errorLayout.setVisibility(View.VISIBLE);
+          (errorLayout.findViewById(R.id.error_image)).setBackgroundResource(R.drawable.ic_add_circle);
+          ((TextView)errorLayout.findViewById(R.id.error_text)).setText("Add Stocks to view information about them");
         }
         else{
           //Do nothing
+          errorLayout.setVisibility(View.GONE);
         }
       }
   else{
         //If device is not connected, again we have two situations
-        if(mCursorAdapter == null || mCursorAdapter.getItemCount() == 0 )
+        if( mCursor.getCount() == 0 )
         {
-         Log.d("Yolopad","You require internet connection");
+         errorLayout.setVisibility(View.VISIBLE);
+          ((TextView)errorLayout.findViewById(R.id.error_text)).setText(getString(R.string.network_toast));
         }
         else{
-         Log.d("Yolopad","Stock information may be out of date");
+          errorLayout.setVisibility(View.GONE);
+          networkSnackBar("No connection, Stock information may be out of date");
+
         }
       }
 
   }
-  private void networkSnackBar()
+  private void networkSnackBar(String message)
   {
-    //Snackbar.make(findViewById(R.id.coo))
     CoordinatorLayout cl = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
-//    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-    Snackbar.make(cl,"Connectivity issue",Snackbar.LENGTH_LONG).show();
-    if(mCursorAdapter == null)
-      Log.d("Yolopad","Still null");
+    Snackbar.make(cl,message,Snackbar.LENGTH_INDEFINITE).show();
+
   }
 }
 

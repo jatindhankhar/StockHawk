@@ -9,9 +9,11 @@ import android.app.Activity;
 
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -37,11 +39,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 
 public class DetailActivity extends AppCompatActivity {
@@ -53,14 +58,17 @@ public class DetailActivity extends AppCompatActivity {
     private ArrayList<Float>  values;
     private LineChart lineChart;
     private FloatingActionButton fab;
+    private View errorLayout;
+    private CircularProgressBar circularProgressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         lineChart = (LineChart) findViewById(R.id.chart);
+        lineChart.setVisibility(View.GONE);
         fab = (FloatingActionButton)  findViewById(R.id.fabShare);
-        fab.setOnClickListener(shareImage);
+        fab.setVisibility(View.GONE);
         String info = getIntent().getStringExtra("info");
         try {
             extraInfo = new JSONObject(info);
@@ -70,10 +78,42 @@ public class DetailActivity extends AppCompatActivity {
             e.printStackTrace();
 
         }
+        errorLayout = (View)findViewById(R.id.error_layout);
+        circularProgressBar = (CircularProgressBar) findViewById(R.id.circularProgressBar);
         getSupportActionBar().setTitle(name);
         fetchData();
 
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("name",name);
+        outState.putStringArrayList("dates",dates);
+        float[] valuesArray = new float[values.size()];
+        for (int i = 0; i < valuesArray.length; i++) {
+            valuesArray[i] = values.get(i);
+        }
+        outState.putFloatArray("values", valuesArray);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null && savedInstanceState.containsKey("name")) {
+
+            name = savedInstanceState.getString("name");
+            dates = savedInstanceState.getStringArrayList("dates");
+            values = new ArrayList<>();
+
+            float[] valuesArray = savedInstanceState.getFloatArray("values");
+            for (float f : valuesArray) {
+                values.add(f);
+            }
+            drawGraph();
+        }
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     public void fetchData()
@@ -105,7 +145,7 @@ public class DetailActivity extends AppCompatActivity {
        okHttpClient.newCall(request).enqueue(new Callback() {
            @Override
            public void onFailure(Request request, IOException e) {
-
+            handleError();
            }
 
            @Override
@@ -129,18 +169,47 @@ public class DetailActivity extends AppCompatActivity {
                         Log.d("Quote is "," " + values.get(0));
                         drawGraph();
 
+
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        handleError();
                     }
                 }
                else
                 {
-
+                    handleError();
                 }
            }
        });
 
 
+
+
+    }
+
+    private void handleSuccess() {
+        DetailActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                circularProgressBar.setVisibility(View.GONE);
+                lineChart.setVisibility(View.VISIBLE);
+                fab.setVisibility(View.VISIBLE);
+                fab.setOnClickListener(shareImage);
+                errorLayout.setVisibility(View.GONE);
+            }
+        });
+
+    }
+
+    private void handleError() {
+        DetailActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                circularProgressBar.setVisibility(View.GONE);
+                ((TextView)errorLayout.findViewById(R.id.error_text)).setText("There was some error");
+                errorLayout.setVisibility(View.VISIBLE);
+            }
+        });
 
 
     }
@@ -191,7 +260,7 @@ public class DetailActivity extends AppCompatActivity {
                 xAxis.setAvoidFirstLastClipping(true);
                 // X - axis labels are cut off
                 // Bug  Already reported :( https://github.com/PhilJay/MPAndroidChart/issues/1484
-
+                handleSuccess();
             }
         });
 
