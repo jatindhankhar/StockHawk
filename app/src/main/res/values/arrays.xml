@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="gplus_colors">
+        <item>@color/material_blue_600</item>
+        <item>@color/material_red_700</item>
+        <item>@color/material_green_700</item>
+        <item>@color/orange</item>
+    </string-array>
+</resources>

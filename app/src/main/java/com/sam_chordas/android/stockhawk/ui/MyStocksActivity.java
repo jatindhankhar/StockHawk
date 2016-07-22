@@ -282,6 +282,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     CoordinatorLayout cl = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 //    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
     Snackbar.make(cl,"Connectivity issue",Snackbar.LENGTH_LONG).show();
+    if(mCursorAdapter == null)
+      Log.d("Yolopad","Still null");
   }
 }
 
