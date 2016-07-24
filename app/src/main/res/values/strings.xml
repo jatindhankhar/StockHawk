@@ -24,4 +24,5 @@
     <string name="choose_app_prompt">Choose an app</string>
     <string name="share_caption_filler">"Stock Price for "</string>
     <string name="stock_price">" Stock Price"</string>
+    <string name="not_valid_stock">" is not a valid stock"</string>
 </resources>

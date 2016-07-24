@@ -72,7 +72,6 @@ public class StockTaskService extends GcmTaskService{
         try {
           urlStringBuilder.append(
               URLEncoder.encode("\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\")", "UTF-8"));
-          Log.d("Yolopad",urlStringBuilder.toString());
         } catch (UnsupportedEncodingException e) {
           e.printStackTrace();
         }
@@ -111,7 +110,6 @@ public class StockTaskService extends GcmTaskService{
 
     if (urlStringBuilder != null){
       urlString = urlStringBuilder.toString();
-      Log.d("Yolopad",urlString);
       try{
         getResponse = fetchData(urlString);
         result = GcmNetworkManager.RESULT_SUCCESS;

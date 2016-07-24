@@ -142,7 +142,6 @@ public class DetailActivity extends AppCompatActivity {
 
         // Request Building
         OkHttpClient okHttpClient = new OkHttpClient();
-        Log.d("Yolopad", "Url is " + urlStringBuilder.toString());
         final Request request = new Request.Builder().url(urlStringBuilder.toString()).build();
         // https://github.com/codepath/android_guides/wiki/Using-OkHttp#asynchronous-network-calls
        okHttpClient.newCall(request).enqueue(new Callback() {
@@ -157,6 +156,7 @@ public class DetailActivity extends AppCompatActivity {
                 {
                     try {
                         JSONObject jsonObject = new JSONObject(response.body().string());
+
                         // Thanks http://stackoverflow.com/questions/14898768/how-to-access-nested-elements-of-json-object-using-getjsonarray-method
                         JSONArray quotes = jsonObject.getJSONObject("query").getJSONObject("results").getJSONArray("quote");
                         dates = new ArrayList<>();
@@ -168,8 +168,6 @@ public class DetailActivity extends AppCompatActivity {
                             dates.add(quotes.getJSONObject(i).get("Date").toString());
                             values.add(Float.parseFloat(quotes.getJSONObject(i).get("Close").toString()));
                         }
-                        Log.d("Date is ",dates.get(0));
-                        Log.d("Quote is "," " + values.get(0));
                         drawGraph();
 
 
