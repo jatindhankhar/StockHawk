@@ -14,4 +14,14 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="stocks_button_desc">Add New Stocks</string>
+    <string name="share_button_desc">Share Stock Information</string>
+    <string name="sb_error_info">No connection, Stock information may be out of date</string>
+    <string name="add_stock_prompt">Add Stocks to view information about them</string>
+    <string name="connectivity_issue_info">Connectivity issue</string>
+    <string name="stock_already_saved">This stock is already saved!</string>
+    <string name="error_info">There was some error</string>
+    <string name="choose_app_prompt">Choose an app</string>
+    <string name="share_caption_filler">"Stock Price for "</string>
+    <string name="stock_price">" Stock Price"</string>
 </resources>
