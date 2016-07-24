@@ -20,7 +20,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Jatin"
             android:id="@+id/app"
             android:textColor="@android:color/white"
             android:textSize="@dimen/md_title_textsize"
@@ -35,7 +34,7 @@
             android:layout_height="match_parent"
             android:src="@drawable/ic_trending_up"
             android:textSize="@dimen/md_title_textsize"
-            android:layout_gravity="left|center_vertical" />
+            android:layout_gravity="left|start|center_vertical" />
 
         <TextView
             android:layout_width="wrap_content"
