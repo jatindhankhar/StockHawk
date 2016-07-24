@@ -42,8 +42,6 @@ public class StockWidget extends AppWidgetProvider {
         if (action.equals(CLICK_ACTION)) {
             final String symbol = intent.getStringExtra("symbol");
             final String extraInfo = intent.getStringExtra("info");
-           Log.d("Yolopad","Item Touched");
-            Toast.makeText(context, "Hello", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(context, DetailActivity.class);
             i.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
             i.putExtra("ticker", symbol);

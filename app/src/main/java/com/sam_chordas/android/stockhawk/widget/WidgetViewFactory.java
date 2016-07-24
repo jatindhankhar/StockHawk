@@ -61,7 +61,6 @@ public class WidgetViewFactory implements RemoteViewsService.RemoteViewsFactory 
     @Override
     public RemoteViews getViewAt(int position) {
 
-        Log.d("Yolopad","Getting data");
         // Data fields for holding with some assumptions
         isUp = 1;
         if(mCursor.moveToPosition(position))
