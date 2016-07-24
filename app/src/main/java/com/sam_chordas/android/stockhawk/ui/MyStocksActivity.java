@@ -84,7 +84,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         startService(mServiceIntent);
       } else{
         networkToast();
-        networkSnackBar("Connectivity issue!");
+        networkSnackBar(getString(R.string.connectivity_issue_info));
       }
     }
     RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -100,8 +100,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 Cursor c = mCursorAdapter.getCursor();
                 c.moveToPosition(position);
                 String extraInfo = c.getString(c.getColumnIndex(QuoteColumns.EXTRAINFO));
-
-                //Toast.makeText(MyStocksActivity.this, "Daymn Bro! " + sym, Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getBaseContext(),DetailActivity.class).putExtra("info",extraInfo));
 
               }
@@ -126,7 +124,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                       new String[] { input.toString() }, null);
                   if (c.getCount() != 0) {
                     Toast toast =
-                        Toast.makeText(MyStocksActivity.this, "This stock is already saved!",
+                        Toast.makeText(MyStocksActivity.this, R.string.stock_already_saved,
                             Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                     toast.show();
@@ -141,7 +139,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
               })
               .show();
         } else {
-          networkSnackBar("Connectivity issue");
+          networkSnackBar(getString(R.string.connectivity_issue_info));
         }
 
       }
@@ -256,7 +254,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
           //Prompt user to add a stock
           errorLayout.setVisibility(View.VISIBLE);
           (errorLayout.findViewById(R.id.error_image)).setBackgroundResource(R.drawable.ic_add_circle);
-          ((TextView)errorLayout.findViewById(R.id.error_text)).setText("Add Stocks to view information about them");
+          ((TextView)errorLayout.findViewById(R.id.error_text)).setText(R.string.add_stock_prompt);
         }
         else{
           //Do nothing
@@ -272,7 +270,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         }
         else{
           errorLayout.setVisibility(View.GONE);
-          networkSnackBar("No connection, Stock information may be out of date");
+          networkSnackBar(getString(R.string.sb_error_info));
 
         }
       }

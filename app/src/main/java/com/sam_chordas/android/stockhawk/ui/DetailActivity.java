@@ -59,6 +59,7 @@ public class DetailActivity extends AppCompatActivity {
     private LineChart lineChart;
     private FloatingActionButton fab;
     private View errorLayout;
+    private boolean dataAvailable = false;
     private CircularProgressBar circularProgressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,22 +82,24 @@ public class DetailActivity extends AppCompatActivity {
         errorLayout = (View)findViewById(R.id.error_layout);
         circularProgressBar = (CircularProgressBar) findViewById(R.id.circularProgressBar);
         getSupportActionBar().setTitle(name);
-        fetchData();
-
+        if(savedInstanceState == null) {
+            fetchData();
+        }
 
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("name",name);
-        outState.putStringArrayList("dates",dates);
-        float[] valuesArray = new float[values.size()];
-        for (int i = 0; i < valuesArray.length; i++) {
-            valuesArray[i] = values.get(i);
-        }
-        outState.putFloatArray("values", valuesArray);
-
         super.onSaveInstanceState(outState);
+        if(dataAvailable) {
+            outState.putString("name", name);
+            outState.putStringArrayList("dates", dates);
+            float[] valuesArray = new float[values.size()];
+            for (int i = 0; i < valuesArray.length; i++) {
+                valuesArray[i] = values.get(i);
+            }
+
+        }
     }
 
     @Override
@@ -206,7 +209,7 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void run() {
                 circularProgressBar.setVisibility(View.GONE);
-                ((TextView)errorLayout.findViewById(R.id.error_text)).setText("There was some error");
+                ((TextView)errorLayout.findViewById(R.id.error_text)).setText(R.string.error_info);
                 errorLayout.setVisibility(View.VISIBLE);
             }
         });
@@ -225,7 +228,7 @@ public class DetailActivity extends AppCompatActivity {
                 {
                     entries.add(new Entry(values.get(i), i));
                 }
-                LineDataSet dataSet = new LineDataSet(entries," Stock Price");
+                LineDataSet dataSet = new LineDataSet(entries,getString(R.string.stock_price));
                 //Dataset customization
                 dataSet.setColors(ColorTemplate.PASTEL_COLORS);
                 dataSet.setDrawCircles(true);
@@ -247,7 +250,7 @@ public class DetailActivity extends AppCompatActivity {
                 lineChart.getAxisRight().setTextSize(12f);
                 lineChart.getAxisRight().setTextColor(ColorTemplate.getHoloBlue());
                 lineChart.animateY(1000, Easing.EasingOption.EaseOutCirc);
-                lineChart.setDescription("Stock Price for " + symbol);
+                lineChart.setDescription(getString(R.string.share_caption_filler) + symbol);
                 //lineChart.setMarkerView();
 
                 // Set Marker View
@@ -260,6 +263,7 @@ public class DetailActivity extends AppCompatActivity {
                 xAxis.setAvoidFirstLastClipping(true);
                 // X - axis labels are cut off
                 // Bug  Already reported :( https://github.com/PhilJay/MPAndroidChart/issues/1484
+                dataAvailable = true;
                 handleSuccess();
             }
         });
@@ -271,7 +275,6 @@ public class DetailActivity extends AppCompatActivity {
     private View.OnClickListener shareImage = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Toast.makeText(DetailActivity.this, "Hello", Toast.LENGTH_SHORT).show();
             // save bitmap to cache directory
             try {
 
@@ -299,8 +302,8 @@ public class DetailActivity extends AppCompatActivity {
                 shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // temp permission for receiving app to read this file
                 shareIntent.setDataAndType(contentUri, getContentResolver().getType(contentUri));
                 shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, "Stock Price for " + name);
-                startActivity(Intent.createChooser(shareIntent, "Choose an app"));
+                shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_caption_filler) + name);
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.choose_app_prompt)));
 
             }
         }
