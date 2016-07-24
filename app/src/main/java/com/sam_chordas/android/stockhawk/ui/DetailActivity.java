@@ -98,13 +98,13 @@ public class DetailActivity extends AppCompatActivity {
             for (int i = 0; i < valuesArray.length; i++) {
                 valuesArray[i] = values.get(i);
             }
-
+            outState.putFloatArray("values", valuesArray);
         }
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        if (savedInstanceState != null && savedInstanceState.containsKey("name")) {
+        if (savedInstanceState != null && savedInstanceState.containsKey("name") ) {
 
             name = savedInstanceState.getString("name");
             dates = savedInstanceState.getStringArrayList("dates");
